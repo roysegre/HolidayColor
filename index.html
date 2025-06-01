@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>חידת צבע החג</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap');
+
+        :root {
+            --primary-color: #FFFFFF; /* White for success message */
+            --danger-color: #F44336; /* Red for error */
+            --text-color: #FFFFFF;
+            --background-overlay-color: rgba(0, 0, 0, 0.6); /* כדי שהכיתוב לא ייבלע */
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Rubik', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-color);
+            overflow: hidden; /* Prevent scroll for animations */
+            position: relative;
+            background-color: #000; /* Fallback background color */
+        }
+
+        /* סגנונות חדשים לתמונות הרקע המפוזרות */
+        .scattered-image {
+            position: absolute;
+            background-size: cover;
+            background-position: center;
+            pointer-events: none; /* כדי לאפשר קליק על אלמנטים שמתחתיהם */
+            opacity: 0.15; /* שקיפות עדינה כדי שהכיתוב לא ייבלע */
+            z-index: 0; /* וודא שהם מתחת לשאר התוכן */
+            filter: grayscale(80%) blur(2px); /* אפקט עדין */
+            transition: opacity 0.5s ease-in-out; /* אנימציית הופעה */
+        }
+
+        .background-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--background-overlay-color);
+            z-index: 1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 20px;
+            max-width: 90%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-grow: 1;
+            justify-content: center;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+        }
+
+        p {
+            font-size: 1em;
+            margin-bottom: 25px;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.5); /* Style for the placeholder */
+        }
+
+        input#answerInput {
+            width: 100%;
+            max-width: 300px;
+            padding: 15px;
+            font-size: 1.1em;
+            border: 2px solid var(--text-color);
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            text-align: center;
+            margin-bottom: 25px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        input#answerInput:focus {
+            border-color: #6a0dad; /* Royal Purple on focus */
+        }
+
+        button#submitButton {
+            background-color: #6a0dad; /* Royal Purple */
+            color: var(--text-color);
+            padding: 15px 30px;
+            font-size: 1.2em;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(106, 13, 173, 0.4);
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 30px;
+        }
+
+        button#submitButton:hover {
+            background-color: #8c00b3; /* Lighter Purple */
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(106, 13, 173, 0.6);
+        }
+
+        button#submitButton:active {
+            transform: translateY(1px);
+        }
+
+        .result-message {
+            position: relative;
+            margin-top: 20px;
+            font-size: 1.8em;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+            display: none;
+            color: var(--text-color);
+            z-index: 10;
+        }
+
+        .result-message.error {
+            color: var(--danger-color);
+        }
+        .result-message.success {
+            color: var(--primary-color);
+        }
+
+        /* Animations */
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            20% { transform: translateX(-10px); }
+            40% { transform: translateX(10px); }
+            60% { transform: translateX(-10px); }
+            80% { transform: translateX(10px); }
+            100% { transform: translateX(0); }
+        }
+
+        .shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+            transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+            perspective: 1000px;
+        }
+
+        .star-burst-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 9999;
+        }
+
+        .star-particle {
+            position: absolute;
+            background-color: #FFF;
+            border-radius: 50%;
+            opacity: 0;
+            animation: star-sparkle 1.5s forwards;
+        }
+
+        @keyframes star-sparkle {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0);
+            }
+            20% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5em;
+            }
+            p {
+                font-size: 0.9em;
+            }
+            input#answerInput {
+                padding: 12px;
+                font-size: 1em;
+            }
+            button#submitButton {
+                padding: 12px 25px;
+                font-size: 1.1em;
+            }
+            .result-message {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-overlay"></div>
+    <div id="scatteredImagesContainer"></div>
+    <div class="container">
+        <h1>מה צבע החג שלא יחגוג?</h1>
+        <p>הקלד את תשובתך בכתב באותיות בעברית</p>
+        <input type="text" id="answerInput">
+        <button id="submitButton">זו התשובה, אני בטוח</button>
+        <div id="resultMessage" class="result-message"></div>
+    </div>
+
+    <div class="star-burst-container" id="starBurstContainer"></div>
+
+    <audio id="wrongSound" src="audio/wrong_sound.mp3" preload="auto"></audio>
+    <audio id="correctSound" src="audio/correct_sound.mp3" preload="auto"></audio>
+
+    <script>
+        const answerInput = document.getElementById('answerInput');
+        const submitButton = document.getElementById('submitButton');
+        const resultMessage = document.getElementById('resultMessage');
+        const starBurstContainer = document.getElementById('starBurstContainer');
+        const wrongSound = document.getElementById('wrongSound');
+        const correctSound = document.getElementById('correctSound');
+        const scatteredImagesContainer = document.getElementById('scatteredImagesContainer');
+
+        // פונקציה ליצירת תמונות רקע מפוזרות
+        function createScatteredImages() {
+            const numImages = 10;
+            const imagePaths = [];
+            for (let i = 1; i <= numImages; i++) {
+                imagePaths.push(`images/${i}.jpg`); // מניח תמונות JPG, שנה אם הסיומת שונה
+            }
+
+            imagePaths.forEach(path => {
+                const img = document.createElement('div');
+                img.classList.add('scattered-image');
+                img.style.backgroundImage = `url('${path}')`;
+
+                // מיקום אקראי, גודל אקראי, סיבוב אקראי
+                const randomTop = Math.random() * 100;
+                const randomLeft = Math.random() * 100;
+                const randomWidth = Math.random() * (30 - 15) + 15; // טווח גודל בין 15 ל-30 vw
+                const randomRotation = Math.random() * 360; // סיבוב מ-0 עד 360 מעלות
+                const randomOpacityDelay = Math.random() * 1; // עיכוב אקראי להופעה
+
+                img.style.top = `${randomTop}vh`;
+                img.style.left = `${randomLeft}vw`;
+                img.style.width = `${randomWidth}vw`;
+                img.style.height = `${randomWidth * 0.75}vw`; // יחס גובה-רוחב קבוע למשל 4:3
+                img.style.transform = `translate(-50%, -50%) rotate(${randomRotation}deg)`;
+                img.style.opacity = 0; // מתחיל עם שקיפות 0
+                img.style.transitionDelay = `${randomOpacityDelay}s`; // מוסיף עיכוב לאנימציה
+
+                // מפעיל את האנימציה לאחר עיכוב קצר כדי לאפשר לעיכוב המעבר להיכנס לתוקף
+                setTimeout(() => {
+                    img.style.opacity = 0.15;
+                }, 100 + randomOpacityDelay * 1000); // 100ms בסיס + עיכוב אקראי
+
+                scatteredImagesContainer.appendChild(img);
+            });
+        }
+
+        // קריאה לפונקציה בעת טעינת הדף
+        document.addEventListener('DOMContentLoaded', createScatteredImages);
+
+
+        // Function to create star/glitter particles
+        function createStarBurst() {
+            const numParticles = 30; // Fewer, but more impactful
+            const colors = ['#FFF', '#FFD700', '#FFC0CB']; // White, Gold, Pink for sparkle
+            for (let i = 0; i < numParticles; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('star-particle');
+                particle.style.left = `calc(50% + ${(Math.random() - 0.5) * 60}vw)`;
+                particle.style.top = `calc(50% + ${(Math.random() - 0.5) * 60}vh)`;
+                particle.style.width = `${Math.random() * 8 + 4}px`; // Varying sizes
+                particle.style.height = particle.style.width;
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.animationDelay = `${Math.random() * 0.5}s`;
+                starBurstContainer.appendChild(particle);
+            }
+        }
+
+        // Function to clear star burst particles
+        function clearStarBurst() {
+            starBurstContainer.innerHTML = '';
+        }
+
+        // Function to show message and apply effects
+        function showResult(message, isCorrect) {
+            resultMessage.textContent = message;
+            resultMessage.style.display = 'block';
+            resultMessage.classList.remove('error', 'success'); // Clear previous state
+
+            if (isCorrect) {
+                resultMessage.classList.add('success');
+                correctSound.play();
+                createStarBurst();
+                setTimeout(() => {
+                    clearStarBurst();
+                }, 1500); // Clear star burst after its animation
+            } else {
+                resultMessage.classList.add('error');
+                document.body.classList.add('shake');
+                wrongSound.play();
+                if (navigator.vibrate) { // Vibrate if supported
+                    navigator.vibrate(200);
+                }
+                setTimeout(() => {
+                    document.body.classList.remove('shake');
+                }, 500); // Remove shake after animation
+            }
+
+            // Hide message after a longer duration for correct answers
+            setTimeout(() => {
+                resultMessage.style.display = 'none';
+            }, isCorrect ? 6000 : 3000); // 6 seconds for success, 3 seconds for error
+        }
+
+        submitButton.addEventListener('click', () => {
+            const userAnswer = answerInput.value.trim().toLowerCase();
+            const correctAnswers = ["לבן", "white"]; // התשובה הנכונה החדשה, הוספתי גם באנגלית למקרה הצורך
+
+            if (correctAnswers.includes(userAnswer)) {
+                showResult("תשובה נכונה! החג שלא יחגוג הוא לבן!", true);
+            } else {
+                showResult("תשובה שגויה", false);
+            }
+        });
+
+        // Optional: Allow pressing Enter to submit
+        answerInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                submitButton.click();
+            }
+        });
+    </script>
+</body>
+</html>
