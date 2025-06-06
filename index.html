@@ -24,39 +24,39 @@
             color: var(--text-color);
             overflow: hidden; /* Prevent scroll for animations */
             position: relative;
-            background-color: #000; /* Fallback background color - חשוב למובייל */
-            width: 100vw; /* לוודא שכל רוחב המסך נלקח בחשבון */
-            height: 100vh; /* לוודא שכל גובה המסך נלקח בחשבון */
+            background-color: #000; /* צבע רקע שחור - כעת משאיר שחור */
+            width: 100vw;
+            height: 100vh;
         }
 
         /* שכבת מידע תחתונה: סגנונות לתמונות הרקע המפוזרות */
         #scatteredImagesContainer {
-            position: fixed; /* שימוש ב-fixed כדי לוודא שכל המסך מתמלא */
+            position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            overflow: hidden; /* לוודא שאין גלילה בגלל תמונות הרקע */
-            z-index: 0; /* תמיד ברקע */
-            transition: opacity 0.5s ease-in-out; /* אנימציית העלמה */
+            overflow: hidden;
+            z-index: 0;
+            transition: opacity 0.5s ease-in-out;
         }
 
         .scattered-image {
             position: absolute;
-            background-size: contain; /* וודא שכל התמונה נכנסת */
-            background-repeat: no-repeat; /* מונע חזרות */
+            background-size: contain;
+            background-repeat: no-repeat;
             background-position: center;
-            pointer-events: none; /* כדי לאפשר קליק על אלמנטים שמתחתיהם */
-            opacity: 0.8; /* שקיפות מוגברת לבהירות מקסימלית */
-            filter: none; /* הסרת כל הפילטרים - חדות וצבעוניות מקסימלית */
-            transition: opacity 0.5s ease-in-out; /* אנימציית הופעה */
-            box-sizing: border-box; /* חשוב לחישובי רוחב/גובה מדויקים */
+            pointer-events: none;
+            opacity: 0.8;
+            filter: none;
+            transition: opacity 0.5s ease-in-out;
+            box-sizing: border-box;
         }
 
         /* שכבת מידע עליונה: קונטיינר הפאזל הראשי */
         .puzzle-container {
             position: relative;
-            z-index: 2; /* תמיד מעל רקע */
+            z-index: 2;
             text-align: center;
             padding: 20px;
             max-width: 90%;
@@ -64,10 +64,12 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            flex-grow: 1; /* יתפרס למילוי הגובה הזמין */
+            flex-grow: 1;
             justify-content: center;
             width: 100%;
-            transition: opacity 0.5s ease-in-out; /* הוספת מעבר לאפקט הסתרת הפאזל */
+            transition: opacity 0.5s ease-in-out;
+            background-color: rgba(0, 0, 0, 0.4); /* רקע שקוף למקרה של בעיות טעינת תמונות */
+            border-radius: 10px;
         }
 
         .puzzle-container h1 {
@@ -103,11 +105,11 @@
         }
 
         .puzzle-container input#answerInput:focus {
-            border-color: #6a0dad; /* Royal Purple on focus */
+            border-color: #6a0dad;
         }
 
         .puzzle-container button#submitButton {
-            background-color: #6a0dad; /* Royal Purple */
+            background-color: #6a0dad;
             color: var(--text-color);
             padding: 15px 30px;
             font-size: 1.2em;
@@ -123,7 +125,7 @@
         }
 
         button#submitButton:hover {
-            background-color: #8c00b3; /* Lighter Purple */
+            background-color: #8c00b3;
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(106, 13, 173, 0.6);
         }
@@ -140,7 +142,7 @@
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
             display: none;
             color: var(--text-color);
-            z-index: 10; /* תמיד מעל הכול */
+            z-index: 10;
         }
 
         .result-message.error {
@@ -175,7 +177,7 @@
             height: 100%;
             pointer-events: none;
             overflow: hidden;
-            z-index: 9999; /* הכי גבוה */
+            z-index: 9999;
         }
 
         .star-particle {
@@ -203,48 +205,50 @@
 
         /* סגנונות לתוכן שיוצג לאחר תשובה נכונה */
         #successContent {
-            display: none; /* מוסתר כברירת מחדל */
+            display: none;
             position: relative;
-            z-index: 2; /* תמיד מעל רקע */
+            z-index: 2;
             text-align: center;
             color: var(--text-color);
             font-size: 1.5em;
             font-weight: 700;
             line-height: 1.6;
-            transition: opacity 0.5s ease-in-out; /* הוספת מעבר להופעה */
+            transition: opacity 0.5s ease-in-out;
             padding: 20px;
             box-sizing: border-box;
             max-width: 800px;
             width: 100%;
-            flex-direction: column; /* סידור בעמודות */
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            flex-grow: 1; /* יתפרס למילוי הגובה הזמין */
-            min-height: 100vh; /* וודא שיש גובה מספק לריכוז גם כשהוא מוסתר */
+            flex-grow: 1;
+            min-height: 100vh;
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
         }
 
         .color-info-row {
             display: flex;
             align-items: center;
-            justify-content: center; /* מרכז את השורות */
+            justify-content: center;
             margin-bottom: 20px;
-            flex-wrap: wrap; /* מאפשר גלישה בשורה למסכים קטנים */
+            flex-wrap: wrap;
         }
 
         .color-info-row img {
-            width: 80px; /* גודל קבוע לתמונות הצבע */
+            width: 80px;
             height: 80px;
             object-fit: contain;
-            margin-inline-end: 15px; /* רווח לימין התמונה (ב-rtl) */
+            margin-inline-end: 15px;
             vertical-align: middle;
-            border-radius: 8px; /* פינות מעוגלות */
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3); /* צל עדין */
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
         }
 
         .color-info-row .equal-sign {
             font-size: 1.5em;
             font-weight: 700;
-            margin-inline-end: 15px; /* רווח לימין הסימן = (ב-rtl) */
+            margin-inline-end: 15px;
             vertical-align: middle;
         }
 
@@ -252,15 +256,15 @@
             font-size: 1.2em;
             font-weight: 400;
             vertical-align: middle;
-            text-align: start; /* יישור לשמאל */
-            direction: ltr; /* יישור המספרים משמאל לימין */
+            text-align: start;
+            direction: ltr;
             display: flex;
-            flex-wrap: wrap; /* מאפשר למספרים לגלוש לשורה חדשה אם אין מקום */
-            gap: 5px 10px; /* רווח בין מספרים */
-            justify-content: flex-start; /* יישור המספרים לשמאל בתוך הקונטיינר שלהם */
+            flex-wrap: wrap;
+            gap: 5px 10px;
+            justify-content: flex-start;
         }
 
-        /* מדיה קווארי למסכים קטנים יותר (מותאם למובייל) */
+        /* מדיה קווארי למסכים קטנים יותר */
         @media (max-width: 768px) {
             .puzzle-container h1, #successContent {
                 font-size: 1.5em;
@@ -272,8 +276,8 @@
                 font-size: 1em;
             }
             .color-info-row {
-                flex-direction: column; /* בעמודות במסכים קטנים */
-                align-items: center; /* מרכז את התוכן */
+                flex-direction: column;
+                align-items: center;
             }
             .color-info-row img {
                 margin-inline-end: 0;
@@ -287,7 +291,7 @@
                 font-size: 1.3em;
             }
             .color-info-row .numbers {
-                justify-content: center; /* מרכז את המספרים */
+                justify-content: center;
                 text-align: center;
                 font-size: 1.1em;
             }
@@ -350,195 +354,3 @@
         <div class="color-info-row">
             <img src="images/blue.jpg" alt="Blue">
             <span class="equal-sign">=</span>
-            <span class="numbers">77, 104, 457, 484</span>
-        </div>
-    </div>
-
-    <div class="star-burst-container" id="starBurstContainer"></div>
-    <audio id="wrongSound" src="audio/wrong_sound.mp3" preload="auto"></audio>
-    <audio id="correctSound" src="audio/correct_sound.mp3" preload="auto"></audio>
-
-    <script>
-        const answerInput = document.getElementById('answerInput');
-        const submitButton = document.getElementById('submitButton');
-        const resultMessage = document.getElementById('resultMessage');
-        const starBurstContainer = document.getElementById('starBurstContainer');
-        const wrongSound = document.getElementById('wrongSound');
-        const correctSound = document.getElementById('correctSound');
-        const scatteredImagesContainer = document.getElementById('scatteredImagesContainer');
-        const puzzleContainer = document.getElementById('puzzleContainer');
-        const successContent = document.getElementById('successContent');
-
-        // פונקציה ליצירת תמונות רקע מפוזרות (שכבה תחתונה)
-        function createScatteredImages() {
-            const numImages = 10;
-            const imagePaths = [];
-            for (let i = 1; i <= numImages; i++) {
-                // נתיב התמונות, כרגע מניח JPG, שנה אם הסיומת שונה.
-                // וודא שתמונות אלו קיימות בתיקיית images.
-                imagePaths.push(`images/${i}.jpg`); 
-            }
-
-            const occupiedAreas = [];
-            const padding = 5; // ריווח מינימלי בין תמונות (ביחידות vw/vh)
-            const maxAttemptsPerImage = 250;
-
-            imagePaths.forEach(path => {
-                const img = document.createElement('div');
-                img.classList.add('scattered-image');
-                img.style.backgroundImage = `url('${path}')`;
-
-                let newX, newY, newWidth, newHeight, newRotation;
-                let overlap = true;
-                let attempts = 0;
-
-                while (overlap && attempts < maxAttemptsPerImage) {
-                    attempts++;
-                    // *** התיקון המרכזי: חזרה לטווחים ישרים של vw/vh והגדלה פי 2 ***
-                    // טווח גדלים אקראי מוגדל פי 2: 16vw עד 36vw
-                    newWidth = Math.random() * (36 - 16) + 16;
-                    newHeight = newWidth * 0.75; // שמירה על יחס גובה-רוחב (לדוגמה: 4:3)
-
-                    // חישוב מיקום אקראי שמוודא שהתמונה כולה נשארת בתוך ה-viewport
-                    newX = Math.random() * (100 - newWidth);
-                    newY = Math.random() * (100 - newHeight);
-                    newRotation = Math.random() * 360;
-
-                    overlap = false;
-                    for (const area of occupiedAreas) {
-                        // בדיקת התנגשות AABB (Axis-Aligned Bounding Box)
-                        if (newX < area.x + area.width + padding &&
-                            newX + newWidth > area.x - padding &&
-                            newY < area.y + area.height + padding &&
-                            newY + newHeight > area.y - padding)
-                        {
-                            overlap = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (attempts === maxAttemptsPerImage) {
-                    console.warn(`Could not find non-overlapping position for image ${path} after ${maxAttemptsPerImage} attempts. Placing it anyway, may overlap.`);
-                    // במקרה קיצון כזה, פשוט נציב במיקום אקראי אחרון
-                    newX = Math.random() * (100 - newWidth);
-                    newY = Math.random() * (100 - newHeight);
-                }
-
-                img.style.left = `${newX}vw`;
-                img.style.top = `${newY}vh`;
-                img.style.width = `${newWidth}vw`;
-                img.style.height = `${newHeight}vh`;
-                img.style.transform = `rotate(${newRotation}deg)`;
-
-                img.style.opacity = 0;
-                img.style.transitionDelay = `${Math.random() * 0.5}s`;
-
-                occupiedAreas.push({ 
-                    x: newX, 
-                    y: newY, 
-                    width: newWidth, 
-                    height: newHeight 
-                });
-
-                scatteredImagesContainer.appendChild(img);
-                // טעינה איטית יותר כדי לוודא שכל התמונות הספיקו להטען
-                setTimeout(() => {
-                    img.style.opacity = 0.8;
-                }, 100 + (Math.random() * 500));
-            });
-        }
-
-        // קריאה לפונקציה בעת טעינת הדף
-        document.addEventListener('DOMContentLoaded', createScatteredImages);
-        
-        // הוספתי Event Listener ל-load כדי לוודא שהתמונות נטענות רק לאחר טעינת הדף
-        // וגם Event Listener ל-resize למקרים בהם המשתמש מסובב את המסך בנייד
-        window.addEventListener('load', createScatteredImages);
-        window.addEventListener('resize', () => {
-            // נקה את התמונות הקיימות רק אם יש שינוי מהותי בגודל המסך כדי למנוע הבהובים
-            // (לדוגמה, אם יש שינוי של 5% לפחות ברוחב או בגובה)
-            const currentWidth = window.innerWidth;
-            const currentHeight = window.innerHeight;
-            if (!window.lastKnownWidth || Math.abs(currentWidth - window.lastKnownWidth) > currentWidth * 0.05 ||
-                !window.lastKnownHeight || Math.abs(currentHeight - window.lastKnownHeight) > currentHeight * 0.05) {
-                
-                scatteredImagesContainer.innerHTML = ''; 
-                createScatteredImages();
-                window.lastKnownWidth = currentWidth;
-                window.lastKnownHeight = currentHeight;
-            }
-        });
-
-
-        // פונקציה ליצירת חלקיקי כוכבים/נצנצים
-        function createStarBurst() {
-            const numParticles = 30;
-            const colors = ['#FFF', '#FFD700', '#FFC0CB'];
-            for (let i = 0; i < numParticles; i++) {
-                const particle = document.createElement('div');
-                particle.classList.add('star-particle');
-                particle.style.left = `calc(50% + ${(Math.random() - 0.5) * 60}vw)`;
-                particle.style.top = `calc(50% + ${(Math.random() - 0.5) * 60}vh)`;
-                particle.style.width = `${Math.random() * 8 + 4}px`;
-                particle.style.height = particle.style.width;
-                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                particle.style.animationDelay = `${Math.random() * 0.5}s`;
-                starBurstContainer.appendChild(particle);
-            }
-        }
-
-        // פונקציה לניקוי חלקיקי הכוכבים
-        function clearStarBurst() {
-            starBurstContainer.innerHTML = '';
-        }
-
-        // פונקציה להצגת הודעת תוצאה ויישום אפקטים
-        function showResult(message, isCorrect) {
-            resultMessage.textContent = message;
-            resultMessage.style.display = 'block';
-            resultMessage.classList.remove('error', 'success');
-
-            if (isCorrect) {
-                resultMessage.classList.add('success');
-                correctSound.play();
-                createStarBurst();
-
-                // הסתרת אלמנטי הפאזל הקודמים ושכבת הרקע התחתונה
-                puzzleContainer.style.opacity = 0;
-                scatteredImagesContainer.style.opacity = 0;
-                puzzleContainer.style.pointerEvents = 'none';
-
-                setTimeout(() => {
-                    puzzleContainer.style.display = 'none';
-                    scatteredImagesContainer.style.display = 'none';
-
-                    // הצגת התוכן החדש
-                    successContent.style.display = 'flex';
-                    successContent.style.opacity = 1;
-                }, 500);
-
-            } else {
-                resultMessage.classList.add('error');
-                document.body.classList.add('shake');
-                wrongSound.play();
-                if (navigator.vibrate) {
-                    navigator.vibrate(200);
-                }
-                setTimeout(() => {
-                    document.body.classList.remove('shake');
-                }, 500);
-            }
-
-            // הסתרת הודעת התוצאה לאחר משך זמן, אך השארת התוכן החדש אם התשובה נכונה
-            setTimeout(() => {
-                resultMessage.style.display = 'none';
-                if (isCorrect) {
-                    clearStarBurst();
-                }
-            }, isCorrect ? 6000 : 3000);
-        }
-
-        // טיפול בלחיצה על כפתור השליחה
-        submitButton.addEventListener('click', () => {
-            const userAnswer = answerInput
