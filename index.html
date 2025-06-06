@@ -24,23 +24,10 @@
             color: var(--text-color);
             overflow: hidden; /* Prevent scroll for animations */
             position: relative;
-            background-color: #000; /* Fallback background color - חשוב למובייל */
-            width: 100vw; /* לוודא שכל רוחב המסך נלקח בחשבון */
-            height: 100vh; /* לוודא שכל גובה המסך נלקח בחשבון */
+            background-color: #000; /* Fallback background color */
         }
 
         /* שכבת מידע תחתונה: סגנונות לתמונות הרקע המפוזרות */
-        #scatteredImagesContainer {
-            position: fixed; /* שימוש ב-fixed כדי לוודא שכל המסך מתמלא */
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden; /* לוודא שאין גלילה בגלל תמונות הרקע */
-            z-index: 0;
-            transition: opacity 0.5s ease-in-out; /* אנימציית העלמה */
-        }
-
         .scattered-image {
             position: absolute;
             background-size: contain; /* וודא שכל התמונה נכנסת */
@@ -48,6 +35,7 @@
             background-position: center;
             pointer-events: none; /* כדי לאפשר קליק על אלמנטים שמתחתיהם */
             opacity: 0.8; /* שקיפות מוגברת לבהירות מקסימלית */
+            z-index: 0; /* וודא שהם מתחת לשאר התוכן */
             filter: none; /* הסרת כל הפילטרים - חדות וצבעוניות מקסימלית */
             transition: opacity 0.5s ease-in-out; /* אנימציית הופעה */
             box-sizing: border-box; /* חשוב לחישובי רוחב/גובה מדויקים */
@@ -64,7 +52,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            flex-grow: 1; /* יתפרס למילוי הגובה הזמין */
+            flex-grow: 1;
             justify-content: center;
             width: 100%;
             transition: opacity 0.5s ease-in-out; /* הוספת מעבר לאפקט הסתרת הפאזל */
@@ -122,13 +110,13 @@
             margin-bottom: 30px;
         }
 
-        button#submitButton:hover {
+        .puzzle-container button#submitButton:hover {
             background-color: #8c00b3; /* Lighter Purple */
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(106, 13, 173, 0.6);
         }
 
-        button#submitButton:active {
+        .puzzle-container button#submitButton:active {
             transform: translateY(1px);
         }
 
@@ -219,9 +207,7 @@
             flex-direction: column; /* סידור בעמודות */
             justify-content: center;
             align-items: center;
-            flex-grow: 1; /* יתפרס למילוי הגובה הזמין */
-            height: 100vh; /* וודא שיש גובה מספק לריכוז */
-            /* הוספתי display: flex ו-flex-direction: column גם כאן ליתר ביטחון */
+            height: 100vh; /* מותח לגובה המסך כדי למרכז */
         }
 
         .color-info-row {
@@ -261,7 +247,7 @@
             justify-content: flex-start; /* יישור המספרים לשמאל בתוך הקונטיינר שלהם */
         }
 
-        /* מדיה קווארי למסכים קטנים יותר (מותאם למובייל) */
+        /* מדיה קווארי למסכים קטנים יותר */
         @media (max-width: 768px) {
             .puzzle-container h1, #successContent {
                 font-size: 1.5em;
@@ -367,26 +353,20 @@
         const wrongSound = document.getElementById('wrongSound');
         const correctSound = document.getElementById('correctSound');
         const scatteredImagesContainer = document.getElementById('scatteredImagesContainer');
-        const puzzleContainer = document.getElementById('puzzleContainer');
-        const successContent = document.getElementById('successContent');
+        const puzzleContainer = document.getElementById('puzzleContainer'); // קונטיינר הפאזל הראשי
+        const successContent = document.getElementById('successContent'); // קונטיינר התוכן החדש
 
         // פונקציה ליצירת תמונות רקע מפוזרות (שכבה תחתונה)
         function createScatteredImages() {
             const numImages = 10;
             const imagePaths = [];
             for (let i = 1; i <= numImages; i++) {
-                // בדיקה אם קובץ התמונה קיים - כדי למנוע שגיאות 404 שעלולות לגרום למסך שחור
-                // (זה לא וודאי שקיימת, אבל יכול לעזור באיתור בעיות)
-                imagePaths.push(`images/${i}.jpg`); 
+                imagePaths.push(`images/${i}.jpg`); // מניח תמונות JPG, שנה אם הסיומת שונה
             }
 
-            const occupiedAreas = [];
-            const padding = 5;
-            const maxAttemptsPerImage = 250;
-
-            // קבלת מימדי המסך בפיקסלים, כדי לדייק יותר בחישוב המיקום
-            const viewportWidth = window.innerWidth;
-            const viewportHeight = window.innerHeight;
+            const occupiedAreas = []; // יאחסן את הקואורדינטות (x, y, width, height) של כל תמונה שמוקמה
+            const padding = 5; // ריווח מינימלי בין תמונות (ביחידות vw/vh)
+            const maxAttemptsPerImage = 250; // מספר ניסיונות למצוא מיקום ללא חפיפה
 
             imagePaths.forEach(path => {
                 const img = document.createElement('div');
@@ -399,70 +379,59 @@
 
                 while (overlap && attempts < maxAttemptsPerImage) {
                     attempts++;
-                    // טווח גדלים אקראי מוגדל (בערך פי 2): 16vw עד 36vw
-                    // נשנה את זה לחישוב מבוסס יחידות ופורט כדי שיהיה עקבי במובייל
-                    newWidth = Math.random() * (0.36 - 0.16) + 0.16; // 16% עד 36% מרוחב ה-viewport
-                    newHeight = newWidth * 0.75; // שמירה על יחס גובה-רוחב (כדי למנוע עיוותים)
+                    // טווח גדלים אקראי: 8vw עד 18vw
+                    newWidth = Math.random() * (18 - 8) + 8;
+                    newHeight = newWidth * 0.75; // שמירה על יחס גובה-רוחב (לדוגמה: 4:3)
 
-                    // מיקום אקראי
-                    newX = Math.random() * (1 - newWidth); // 0% עד (100% - רוחב התמונה) מרוחב ה-viewport
-                    newY = Math.random() * (1 - newHeight); // 0% עד (100% - גובה התמונה) מגובה ה-viewport
-
-                    newRotation = Math.random() * 360;
+                    // חישוב מיקום אקראי שמוודא שהתמונה כולה נשארת בתוך ה-viewport
+                    newX = Math.random() * (100 - newWidth);
+                    newY = Math.random() * (100 - newHeight);
+                    newRotation = Math.random() * 360; // סיבוב אקראי
 
                     overlap = false;
                     for (const area of occupiedAreas) {
                         // בדיקת התנגשות AABB (Axis-Aligned Bounding Box)
-                        if (newX * 100 < area.x + area.width + padding &&
-                            (newX + newWidth) * 100 > area.x - padding &&
-                            newY * 100 < area.y + area.height + padding &&
-                            (newY + newHeight) * 100 > area.y - padding)
+                        if (newX < area.x + area.width + padding &&
+                            newX + newWidth > area.x - padding &&
+                            newY < area.y + area.height + padding &&
+                            newY + newHeight > area.y - padding)
                         {
                             overlap = true;
-                            break;
+                            break; // נמצאה חפיפה, נסה מיקום אחר
                         }
                     }
                 }
 
                 if (attempts === maxAttemptsPerImage) {
                     console.warn(`Could not find non-overlapping position for image ${path} after ${maxAttemptsPerImage} attempts. Placing it anyway, may overlap.`);
-                    // במקרה קיצון כזה, פשוט נציב במיקום אקראי אחרון
-                    newX = Math.random() * (1 - newWidth);
-                    newY = Math.random() * (1 - newHeight);
+                    newX = Math.random() * (100 - newWidth);
+                    newY = Math.random() * (100 - newHeight);
                 }
 
-                img.style.left = `${newX * 100}vw`; // חזרה ליחידות vw
-                img.style.top = `${newY * 100}vh`; // חזרה ליחידות vh
-                img.style.width = `${newWidth * 100}vw`;
-                img.style.height = `${newHeight * 100}vh`;
+                img.style.left = `${newX}vw`;
+                img.style.top = `${newY}vh`;
+                img.style.width = `${newWidth}vw`;
+                img.style.height = `${newHeight}vh`;
                 img.style.transform = `rotate(${newRotation}deg)`;
 
-                img.style.opacity = 0;
-                img.style.transitionDelay = `${Math.random() * 0.5}s`;
+                img.style.opacity = 0; // התמונה מתחילה שקופה
+                img.style.transitionDelay = `${Math.random() * 0.5}s`; // הופעה מדורגת
 
-                occupiedAreas.push({ 
-                    x: newX * 100, 
-                    y: newY * 100, 
-                    width: newWidth * 100, 
-                    height: newHeight * 100 
-                });
+                occupiedAreas.push({ x: newX, y: newY, width: newWidth, height: newHeight });
 
                 setTimeout(() => {
-                    img.style.opacity = 0.8;
+                    img.style.opacity = 0.8; // שקיפות מוגברת, התמונה נראית בבירור
                 }, 100 + (Math.random() * 500));
 
                 scatteredImagesContainer.appendChild(img);
             });
         }
 
+        // קריאה לפונקציה בעת טעינת הדף
         document.addEventListener('DOMContentLoaded', createScatteredImages);
-        // וודא יצירה מחדש של התמונות בשינוי גודל המסך (למקרה של סיבוב מכשיר)
-        window.addEventListener('resize', () => {
-            scatteredImagesContainer.innerHTML = ''; // נקה את התמונות הקיימות
-            createScatteredImages(); // צור אותן מחדש
-        });
 
-        // פונקציה ליצירת חלקיקי כוכבים/נצנצים
+
+        // פונקציה ליצירת חלקיקי כוכבים/נצנצים (אפקט ויזואלי)
         function createStarBurst() {
             const numParticles = 30;
             const colors = ['#FFF', '#FFD700', '#FFC0CB'];
@@ -494,7 +463,6 @@
                 resultMessage.classList.add('success');
                 correctSound.play();
                 createStarBurst();
-
                 // הסתרת אלמנטי הפאזל הקודמים ושכבת הרקע התחתונה
                 puzzleContainer.style.opacity = 0;
                 scatteredImagesContainer.style.opacity = 0; // הסתרת תמונות הרקע
@@ -502,7 +470,7 @@
 
                 setTimeout(() => {
                     puzzleContainer.style.display = 'none'; // הסתר לגמרי לאחר המעבר
-                    scatteredImagesContainer.style.display = 'none'; // הסתרת תמונות הרקע לגמרי
+                    scatteredImagesContainer.style.display = 'none'; // הסתר לגמרי את תמונות הרקע
 
                     // הצגת התוכן החדש
                     successContent.style.display = 'flex'; // הצג כ-flex כדי למרכז
@@ -525,10 +493,29 @@
             setTimeout(() => {
                 resultMessage.style.display = 'none';
                 if (isCorrect) {
-                    clearStarBurst();
+                    clearStarBurst(); // נקה את הכוכבים גם לאחר שההודעה נעלמת
                 }
             }, isCorrect ? 6000 : 3000);
         }
 
         // טיפול בלחיצה על כפתור השליחה
         submitButton.addEventListener('click', () => {
+            const userAnswer = answerInput.value.trim().toLowerCase();
+            const correctAnswers = ["לבן", "white"];
+
+            if (correctAnswers.includes(userAnswer)) {
+                showResult("תשובה נכונה! כל הכבוד", true);
+            } else {
+                showResult("תשובה שגויה!", false);
+            }
+        });
+
+        // מאפשר לחיצה על Enter לשליחת התשובה
+        answerInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                submitButton.click();
+            }
+        });
+    </script>
+</body>
+</html>
