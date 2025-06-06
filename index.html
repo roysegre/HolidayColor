@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>חידת צבע החג</title>
+    <title>דף נחיתה - חידת צבע החג</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap');
 
@@ -27,7 +27,7 @@
             background-color: #000; /* Fallback background color */
         }
 
-        /* סגנונות חדשים לתמונות הרקע המפוזרות */
+        /* שכבת מידע תחתונה: סגנונות לתמונות הרקע המפוזרות */
         .scattered-image {
             position: absolute;
             background-size: contain; /* וודא שכל התמונה נכנסת */
@@ -41,7 +41,8 @@
             box-sizing: border-box; /* חשוב לחישובי רוחב/גובה מדויקים */
         }
 
-        .container {
+        /* שכבת מידע עליונה: קונטיינר הפאזל הראשי */
+        .puzzle-container {
             position: relative;
             z-index: 2;
             text-align: center;
@@ -57,23 +58,23 @@
             transition: opacity 0.5s ease-in-out; /* הוספת מעבר לאפקט הסתרת הפאזל */
         }
 
-        h1 {
+        .puzzle-container h1 {
             font-size: 1.8em;
             font-weight: 700;
             margin-bottom: 20px;
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
         }
 
-        p {
+        .puzzle-container p {
             font-size: 1em;
             margin-bottom: 25px;
         }
 
-        input::placeholder {
-            color: rgba(255, 255, 255, 0.5); /* Style for the placeholder */
+        .puzzle-container input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
         }
 
-        input#answerInput {
+        .puzzle-container input#answerInput {
             width: 100%;
             max-width: 300px;
             padding: 15px;
@@ -89,11 +90,11 @@
             transition: border-color 0.3s ease;
         }
 
-        input#answerInput:focus {
+        .puzzle-container input#answerInput:focus {
             border-color: #6a0dad; /* Royal Purple on focus */
         }
 
-        button#submitButton {
+        .puzzle-container button#submitButton {
             background-color: #6a0dad; /* Royal Purple */
             color: var(--text-color);
             padding: 15px 30px;
@@ -109,13 +110,13 @@
             margin-bottom: 30px;
         }
 
-        button#submitButton:hover {
+        .puzzle-container button#submitButton:hover {
             background-color: #8c00b3; /* Lighter Purple */
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(106, 13, 173, 0.6);
         }
 
-        button#submitButton:active {
+        .puzzle-container button#submitButton:active {
             transform: translateY(1px);
         }
 
@@ -203,6 +204,10 @@
             box-sizing: border-box;
             max-width: 800px;
             width: 100%;
+            flex-direction: column; /* סידור בעמודות */
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* מותח לגובה המסך כדי למרכז */
         }
 
         .color-info-row {
@@ -244,6 +249,15 @@
 
         /* מדיה קווארי למסכים קטנים יותר */
         @media (max-width: 768px) {
+            .puzzle-container h1, #successContent {
+                font-size: 1.5em;
+            }
+            .puzzle-container p {
+                font-size: 0.9em;
+            }
+            .puzzle-container input#answerInput, .puzzle-container button#submitButton {
+                font-size: 1em;
+            }
             .color-info-row {
                 flex-direction: column; /* בעמודות במסכים קטנים */
                 align-items: center; /* מרכז את התוכן */
@@ -251,58 +265,56 @@
             .color-info-row img {
                 margin-inline-end: 0;
                 margin-bottom: 10px;
+                width: 70px;
+                height: 70px;
             }
             .color-info-row .equal-sign {
                 margin-inline-end: 0;
                 margin-bottom: 5px;
+                font-size: 1.3em;
             }
             .color-info-row .numbers {
                 justify-content: center; /* מרכז את המספרים */
                 text-align: center;
-            }
-            #successContent {
-                font-size: 1.2em;
+                font-size: 1.1em;
             }
         }
 
         @media (max-width: 480px) {
-            h1 {
-                font-size: 1.5em;
-            }
-            p {
-                font-size: 0.9em;
-            }
-            input#answerInput {
-                padding: 12px;
-                font-size: 1em;
-            }
-            button#submitButton {
-                padding: 12px 25px;
-                font-size: 1.1em;
-            }
-            .result-message {
-                font-size: 1.5em;
-            }
-            .color-info-row img {
-                width: 60px;
-                height: 60px;
-            }
-            .color-info-row .equal-sign {
+            .puzzle-container h1, #successContent {
                 font-size: 1.2em;
             }
-            .color-info-row .numbers {
+            .puzzle-container p {
+                font-size: 0.8em;
+            }
+            .puzzle-container input#answerInput, .puzzle-container button#submitButton {
+                padding: 10px;
+                font-size: 0.9em;
+            }
+            .result-message {
+                font-size: 1.2em;
+            }
+            .color-info-row img {
+                width: 50px;
+                height: 50px;
+            }
+            .color-info-row .equal-sign {
                 font-size: 1em;
+            }
+            .color-info-row .numbers {
+                font-size: 0.9em;
             }
         }
     </style>
 </head>
 <body>
     <div id="scatteredImagesContainer"></div>
-    <div class="container" id="puzzleContainer">
+
+    <div class="puzzle-container" id="puzzleContainer">
         <h1>מה צבע החג שלא יחגוג?</h1>
-        <p>הקלד את תשובתך בכתב באותיות בעברית</p>
-        <input type="text" id="answerInput">
-        <button id="submitButton">זו התשובה, אני בטוח</button>
+        <p>הקלד את תשובתך פה:</p>
+        <input type="text" id="answerInput" placeholder="הכנס תשובה">
+        <button id="submitButton">זאת התשובה, אני בטוח!</button>
         <div id="resultMessage" class="result-message"></div>
     </div>
 
@@ -330,7 +342,6 @@
     </div>
 
     <div class="star-burst-container" id="starBurstContainer"></div>
-
     <audio id="wrongSound" src="audio/wrong_sound.mp3" preload="auto"></audio>
     <audio id="correctSound" src="audio/correct_sound.mp3" preload="auto"></audio>
 
@@ -345,18 +356,17 @@
         const puzzleContainer = document.getElementById('puzzleContainer'); // קונטיינר הפאזל הראשי
         const successContent = document.getElementById('successContent'); // קונטיינר התוכן החדש
 
-        // פונקציה ליצירת תמונות רקע מפוזרות
+        // פונקציה ליצירת תמונות רקע מפוזרות (שכבה תחתונה)
         function createScatteredImages() {
             const numImages = 10;
             const imagePaths = [];
             for (let i = 1; i <= numImages; i++) {
-                imagePaths.push(`images/${i}.jpg`);
+                imagePaths.push(`images/${i}.jpg`); // מניח תמונות JPG, שנה אם הסיומת שונה
             }
 
-            // יאחסן את הקואורדינטות (x, y, width, height) של כל תמונה שמוקמה
-            const occupiedAreas = [];
-            const padding = 5; // ריווח מינימלי מוגדל בין תמונות (ביחידות vw/vh)
-            const maxAttemptsPerImage = 250; // הגדלת מספר ניסיונות למצוא מיקום ללא חפיפה
+            const occupiedAreas = []; // יאחסן את הקואורדינטות (x, y, width, height) של כל תמונה שמוקמה
+            const padding = 5; // ריווח מינימלי בין תמונות (ביחידות vw/vh)
+            const maxAttemptsPerImage = 250; // מספר ניסיונות למצוא מיקום ללא חפיפה
 
             imagePaths.forEach(path => {
                 const img = document.createElement('div');
@@ -369,12 +379,11 @@
 
                 while (overlap && attempts < maxAttemptsPerImage) {
                     attempts++;
-                    // טווח גדלים אקראי קטן יותר: 8vw עד 18vw
+                    // טווח גדלים אקראי: 8vw עד 18vw
                     newWidth = Math.random() * (18 - 8) + 8;
                     newHeight = newWidth * 0.75; // שמירה על יחס גובה-רוחב (לדוגמה: 4:3)
 
                     // חישוב מיקום אקראי שמוודא שהתמונה כולה נשארת בתוך ה-viewport
-                    // X ו-Y נעים בטווח שמאפשר לתמונה להישאר בתוך המסך
                     newX = Math.random() * (100 - newWidth);
                     newY = Math.random() * (100 - newHeight);
                     newRotation = Math.random() * 360; // סיבוב אקראי
@@ -382,7 +391,6 @@
                     overlap = false;
                     for (const area of occupiedAreas) {
                         // בדיקת התנגשות AABB (Axis-Aligned Bounding Box)
-                        // בודק אם המלבנים חופפים, תוך התחשבות בריווח (padding)
                         if (newX < area.x + area.width + padding &&
                             newX + newWidth > area.x - padding &&
                             newY < area.y + area.height + padding &&
@@ -394,11 +402,8 @@
                     }
                 }
 
-                // אם לא נמצא מיקום ללא חפיפה לאחר ניסיונות רבים, עדיין נציב את התמונה,
-                // אך היא עלולה לחפוף (פחות סביר עם כמות ניסיונות גבוהה וגדלים קטנים).
                 if (attempts === maxAttemptsPerImage) {
                     console.warn(`Could not find non-overlapping position for image ${path} after ${maxAttemptsPerImage} attempts. Placing it anyway, may overlap.`);
-                    // במקרה קיצון כזה, פשוט נציב במיקום אקראי אחרון
                     newX = Math.random() * (100 - newWidth);
                     newY = Math.random() * (100 - newHeight);
                 }
@@ -407,18 +412,16 @@
                 img.style.top = `${newY}vh`;
                 img.style.width = `${newWidth}vw`;
                 img.style.height = `${newHeight}vh`;
-                img.style.transform = `rotate(${newRotation}deg)`; // החלת הסיבוב
+                img.style.transform = `rotate(${newRotation}deg)`;
 
                 img.style.opacity = 0; // התמונה מתחילה שקופה
                 img.style.transitionDelay = `${Math.random() * 0.5}s`; // הופעה מדורגת
 
-                // שמירת המיקום והגודל של התמונה שהוצבה
                 occupiedAreas.push({ x: newX, y: newY, width: newWidth, height: newHeight });
 
-                // מפעיל את אנימציית הופעת השקיפות לאחר עיכוב קצר
                 setTimeout(() => {
                     img.style.opacity = 0.8; // שקיפות מוגברת, התמונה נראית בבירור
-                }, 100 + (Math.random() * 500)); // 100ms בסיס + עיכוב אקראי עד 0.5 שניות
+                }, 100 + (Math.random() * 500));
 
                 scatteredImagesContainer.appendChild(img);
             });
@@ -428,16 +431,16 @@
         document.addEventListener('DOMContentLoaded', createScatteredImages);
 
 
-        // Function to create star/glitter particles
+        // פונקציה ליצירת חלקיקי כוכבים/נצנצים (אפקט ויזואלי)
         function createStarBurst() {
-            const numParticles = 30; // Fewer, but more impactful
-            const colors = ['#FFF', '#FFD700', '#FFC0CB']; // White, Gold, Pink for sparkle
+            const numParticles = 30;
+            const colors = ['#FFF', '#FFD700', '#FFC0CB'];
             for (let i = 0; i < numParticles; i++) {
                 const particle = document.createElement('div');
                 particle.classList.add('star-particle');
                 particle.style.left = `calc(50% + ${(Math.random() - 0.5) * 60}vw)`;
                 particle.style.top = `calc(50% + ${(Math.random() - 0.5) * 60}vh)`;
-                particle.style.width = `${Math.random() * 8 + 4}px`; // Varying sizes
+                particle.style.width = `${Math.random() * 8 + 4}px`;
                 particle.style.height = particle.style.width;
                 particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
                 particle.style.animationDelay = `${Math.random() * 0.5}s`;
@@ -445,64 +448,69 @@
             }
         }
 
-        // Function to clear star burst particles
+        // פונקציה לניקוי חלקיקי הכוכבים
         function clearStarBurst() {
             starBurstContainer.innerHTML = '';
         }
 
-        // Function to show message and apply effects
+        // פונקציה להצגת הודעת תוצאה ויישום אפקטים
         function showResult(message, isCorrect) {
             resultMessage.textContent = message;
             resultMessage.style.display = 'block';
-            resultMessage.classList.remove('error', 'success'); // Clear previous state
+            resultMessage.classList.remove('error', 'success');
 
             if (isCorrect) {
                 resultMessage.classList.add('success');
                 correctSound.play();
                 createStarBurst();
-                // הסתרת אלמנטי הפאזל הקודמים
+                // הסתרת אלמנטי הפאזל הקודמים ושכבת הרקע התחתונה
                 puzzleContainer.style.opacity = 0;
+                scatteredImagesContainer.style.opacity = 0; // הסתרת תמונות הרקע
                 puzzleContainer.style.pointerEvents = 'none'; // מונע קליקים לאחר הסתרה
+
                 setTimeout(() => {
                     puzzleContainer.style.display = 'none'; // הסתר לגמרי לאחר המעבר
+                    scatteredImagesContainer.style.display = 'none'; // הסתר לגמרי את תמונות הרקע
+
                     // הצגת התוכן החדש
-                    successContent.style.display = 'flex'; // שינוי ל-flex כדי למרכז בקלות
-                    successContent.style.flexDirection = 'column'; // סידור בעמודות
-                    successContent.style.justifyContent = 'center';
-                    successContent.style.alignItems = 'center';
-                    successContent.style.opacity = 1; // הופעה הדרגתית
+                    successContent.style.display = 'flex'; // הצג כ-flex כדי למרכז
+                    successContent.style.opacity = 1; // הופעה הדרגתית של התוכן החדש
                 }, 500); // לאחר אנימציית המעבר של הפאזל
 
             } else {
                 resultMessage.classList.add('error');
                 document.body.classList.add('shake');
                 wrongSound.play();
-                if (navigator.vibrate) { // Vibrate if supported
+                if (navigator.vibrate) {
                     navigator.vibrate(200);
                 }
                 setTimeout(() => {
                     document.body.classList.remove('shake');
-                }, 500); // Remove shake after animation
+                }, 500);
             }
 
             // הסתרת הודעת התוצאה לאחר משך זמן, אך השארת התוכן החדש אם התשובה נכונה
             setTimeout(() => {
                 resultMessage.style.display = 'none';
-            }, isCorrect ? 6000 : 3000); // 6 שניות לתשובה נכונה, 3 שניות לשגויה
+                if (isCorrect) {
+                    clearStarBurst(); // נקה את הכוכבים גם לאחר שההודעה נעלמת
+                }
+            }, isCorrect ? 6000 : 3000);
         }
 
+        // טיפול בלחיצה על כפתור השליחה
         submitButton.addEventListener('click', () => {
             const userAnswer = answerInput.value.trim().toLowerCase();
-            const correctAnswers = ["לבן", "white"]; // התשובה הנכונה החדשה, הוספתי גם באנגלית למקרה הצורך
+            const correctAnswers = ["לבן", "white"];
 
             if (correctAnswers.includes(userAnswer)) {
-                showResult("תשובה נכונה!", true); // שיניתי את ההודעה כדי להתאים להסתרה
+                showResult("תשובה נכונה! כל הכבוד", true);
             } else {
-                showResult("תשובה שגויה", false);
+                showResult("תשובה שגויה!", false);
             }
         });
 
-        // Optional: Allow pressing Enter to submit
+        // מאפשר לחיצה על Enter לשליחת התשובה
         answerInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 submitButton.click();
