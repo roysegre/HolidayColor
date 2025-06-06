@@ -24,7 +24,7 @@
             color: var(--text-color);
             overflow: hidden; /* Prevent scroll for animations */
             position: relative;
-            background-color: #000; /* Default background */
+            background-color: #000; /* Default background is black */
             width: 100vw;
             height: 100vh;
         }
@@ -37,26 +37,34 @@
             width: 100vw;
             height: 100vh;
             overflow: hidden;
-            z-index: 0;
+            z-index: 0; /* Ensures it's in the background */
             transition: opacity 0.5s ease-in-out;
         }
 
-        .scattered-image {
+        .scattered-image-wrapper { /* Wrapper for img elements */
             position: absolute;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
             pointer-events: none; /* Allows clicks to pass through to elements below */
-            opacity: 0.8;
-            filter: none;
+            opacity: 0; /* Start hidden */
             transition: opacity 0.5s ease-in-out;
             box-sizing: border-box;
+            display: flex; /* For centering the image if needed inside the wrapper */
+            justify-content: center;
+            align-items: center;
         }
+
+        .scattered-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Ensures image fits without cropping */
+            filter: none; /* No filter by default */
+            /* Removed individual transform here, will apply to wrapper */
+        }
+
 
         /* שכבת מידע עליונה: קונטיינר הפאזל הראשי */
         .puzzle-container {
             position: relative;
-            z-index: 2;
+            z-index: 2; /* Ensures it's above scattered images */
             text-align: center;
             padding: 20px;
             max-width: 90%;
@@ -68,8 +76,9 @@
             justify-content: center;
             width: 100%;
             transition: opacity 0.5s ease-in-out;
-            background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background for content readability */
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background for content readability */
             border-radius: 10px;
+            min-height: 50vh; /* Ensure it has some height even if content is small */
         }
 
         .puzzle-container h1 {
@@ -218,3 +227,370 @@
             box-sizing: border-box;
             max-width: 800px;
             width: 100%;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+            min-height: 100vh;
+            background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
+            border-radius: 10px;
+        }
+
+        .color-info-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Allows items to wrap on smaller screens */
+            width: 100%; /* Ensure row takes full width for wrapping */
+        }
+
+        .color-info-row img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-inline-end: 15px; /* Margin for right-to-left layout */
+            vertical-align: middle;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+
+        .color-info-row .equal-sign {
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-inline-end: 15px; /* Margin for right-to-left layout */
+            vertical-align: middle;
+        }
+
+        .color-info-row .numbers {
+            font-size: 1.2em;
+            font-weight: 400;
+            vertical-align: middle;
+            text-align: start;
+            direction: ltr; /* Ensure numbers are left-to-right */
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px 10px; /* Spacing between numbers */
+            justify-content: flex-start;
+        }
+
+        /* מדיה קווארי למסכים קטנים יותר */
+        @media (max-width: 768px) {
+            .puzzle-container h1, #successContent h1 { /* Apply to h1 in successContent too */
+                font-size: 1.5em;
+            }
+            .puzzle-container p {
+                font-size: 0.9em;
+            }
+            .puzzle-container input#answerInput, .puzzle-container button#submitButton {
+                font-size: 1em;
+            }
+            .color-info-row {
+                flex-direction: column; /* Stack items vertically */
+                align-items: center;
+            }
+            .color-info-row img {
+                margin-inline-end: 0;
+                margin-bottom: 10px;
+                width: 70px;
+                height: 70px;
+            }
+            .color-info-row .equal-sign {
+                margin-inline-end: 0;
+                margin-bottom: 5px;
+                font-size: 1.3em;
+            }
+            .color-info-row .numbers {
+                justify-content: center;
+                text-align: center;
+                font-size: 1.1em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .puzzle-container h1, #successContent h1 {
+                font-size: 1.2em;
+            }
+            .puzzle-container p {
+                font-size: 0.8em;
+            }
+            .puzzle-container input#answerInput, .puzzle-container button#submitButton {
+                padding: 10px;
+                font-size: 0.9em;
+            }
+            .result-message {
+                font-size: 1.2em;
+            }
+            .color-info-row img {
+                width: 50px;
+                height: 50px;
+            }
+            .color-info-row .equal-sign {
+                font-size: 1em;
+            }
+            .color-info-row .numbers {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="scatteredImagesContainer"></div>
+
+    <div class="puzzle-container" id="puzzleContainer">
+        <h1>מה צבע החג שלא יחגוג?</h1>
+        <p>הקלד את תשובתך פה:</p>
+        <input type="text" id="answerInput" placeholder="הכנס תשובה">
+        <button id="submitButton">זאת התשובה, אני בטוח!</button>
+        <div id="resultMessage" class="result-message"></div>
+    </div>
+
+    <div id="successContent">
+        <div class="color-info-row">
+            <img src="images/black.jpg" alt="Black Color Icon">
+            <span class="equal-sign">=</span>
+            <span class="numbers">193, 85, 166, 83</span>
+        </div>
+        <div class="color-info-row">
+            <img src="images/white.jpg" alt="White Color Icon">
+            <span class="equal-sign">=</span>
+            <span class="numbers">470, 471, 472, 229, 256, 283, 310</span>
+        </div>
+        <div class="color-info-row">
+            <img src="images/red.jpg" alt="Red Color Icon">
+            <span class="equal-sign">=</span>
+            <span class="numbers">447, 420, 393, 123, 150</span>
+        </div>
+        <div class="color-info-row">
+            <img src="images/blue.jpg" alt="Blue Color Icon">
+            <span class="equal-sign">=</span>
+            <span class="numbers">77, 104, 457, 484</span>
+        </div>
+    </div>
+
+    <div class="star-burst-container" id="starBurstContainer"></div>
+    <audio id="wrongSound" src="audio/wrong_sound.mp3" preload="auto"></audio>
+    <audio id="correctSound" src="audio/correct_sound.mp3" preload="auto"></audio>
+
+    <script>
+        const answerInput = document.getElementById('answerInput');
+        const submitButton = document.getElementById('submitButton');
+        const resultMessage = document.getElementById('resultMessage');
+        const starBurstContainer = document.getElementById('starBurstContainer');
+        const wrongSound = document.getElementById('wrongSound');
+        const correctSound = document.getElementById('correctSound');
+        const scatteredImagesContainer = document.getElementById('scatteredImagesContainer');
+        const puzzleContainer = document.getElementById('puzzleContainer');
+        const successContent = document.getElementById('successContent');
+
+        // פונקציה ליצירת תמונות רקע מפוזרות (שכבה תחתונה)
+        function createScatteredImages() {
+            console.log("Creating scattered images...");
+            // נקה את הקונטיינר לפני הוספה מחדש
+            scatteredImagesContainer.innerHTML = ''; 
+
+            const numImages = 10;
+            const imagePaths = [];
+            for (let i = 1; i <= numImages; i++) {
+                imagePaths.push(`images/${i}.jpg`); // All scattered images are .jpg
+            }
+
+            const occupiedAreas = [];
+            const padding = 5; // Minimum padding between images (in vw/vh units)
+            const maxAttemptsPerImage = 250; // Max attempts to find non-overlapping position
+
+            imagePaths.forEach(path => {
+                const wrapper = document.createElement('div');
+                wrapper.classList.add('scattered-image-wrapper');
+                
+                const img = document.createElement('img');
+                img.src = path;
+                img.alt = `Decorative image ${path.split('/').pop()}`; // Descriptive alt text
+
+                let newX, newY, newWidth, newHeight, newRotation;
+                let overlap = true;
+                let attempts = 0;
+
+                while (overlap && attempts < maxAttemptsPerImage) {
+                    attempts++;
+                    // Random size range: 16vw to 36vw
+                    newWidth = Math.random() * (36 - 16) + 16;
+                    newHeight = newWidth * 0.75; // Maintain aspect ratio (e.g., 4:3) - adjust if your images aren't 4:3
+
+                    // Calculate random position that ensures the entire image stays within the viewport
+                    newX = Math.random() * (100 - newWidth);
+                    newY = Math.random() * (100 - newHeight);
+                    
+                    newRotation = Math.random() * 360; // Random rotation
+
+                    overlap = false;
+                    for (const area of occupiedAreas) {
+                        // AABB collision detection (Axis-Aligned Bounding Box)
+                        if (newX < area.x + area.width + padding &&
+                            newX + newWidth > area.x - padding &&
+                            newY < area.y + area.height + padding &&
+                            newY + newHeight > area.y - padding)
+                        {
+                            overlap = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (attempts === maxAttemptsPerImage) {
+                    console.warn(`Could not find non-overlapping position for image ${path} after ${maxAttemptsPerImage} attempts. Placing it anyway, may overlap.`);
+                    // As a last resort, just place it at the last random position
+                    newX = Math.random() * (100 - newWidth);
+                    newY = Math.random() * (100 - newHeight);
+                }
+                
+                wrapper.style.left = `${newX}vw`;
+                wrapper.style.top = `${newY}vh`;
+                wrapper.style.width = `${newWidth}vw`;
+                wrapper.style.height = `${newHeight}vh`;
+                wrapper.style.transform = `rotate(${newRotation}deg)`;
+
+
+                img.onload = () => {
+                    console.log(`Image loaded: ${path}`);
+                    wrapper.appendChild(img);
+                    scatteredImagesContainer.appendChild(wrapper);
+                    setTimeout(() => {
+                        wrapper.style.opacity = 0.8; // Fade in after loading
+                    }, 100 + (Math.random() * 500));
+                };
+                img.onerror = () => {
+                    console.error(`Failed to load image: ${path}. Please check the file path, name, and case sensitivity.`);
+                };
+
+                occupiedAreas.push({ 
+                    x: newX, 
+                    y: newY, 
+                    width: newWidth, 
+                    height: newHeight 
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("DOM content loaded.");
+            createScatteredImages();
+            document.body.style.backgroundColor = '#000'; // Ensure background is black
+            // Preload sounds to avoid delay on first play
+            wrongSound.load();
+            correctSound.load();
+        });
+        
+        // Re-create scattered images on significant window resize (e.g., device rotation)
+        window.addEventListener('resize', () => {
+            const currentWidth = window.innerWidth;
+            const currentHeight = window.innerHeight;
+            // If there's a significant dimension change (e.g., 10% change), re-layout images
+            if (!window.lastKnownWidth || Math.abs(currentWidth - window.lastKnownWidth) > currentWidth * 0.1 || 
+                !window.lastKnownHeight || Math.abs(currentHeight - window.lastKnownHeight) > currentHeight * 0.1) {
+                
+                console.log("Window resized significantly, re-creating scattered images.");
+                createScatteredImages(); 
+                window.lastKnownWidth = currentWidth;
+                window.lastKnownHeight = currentHeight;
+            }
+        });
+
+
+        // פונקציה ליצירת חלקיקי כוכבים/נצנצים
+        function createStarBurst() {
+            console.log("Creating star burst effect.");
+            const numParticles = 30;
+            const colors = ['#FFF', '#FFD700', '#FFC0CB']; // White, Gold, Pink
+            for (let i = 0; i < numParticles; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('star-particle');
+                // Particles burst from center
+                particle.style.left = `calc(50% + ${(Math.random() - 0.5) * 60}vw)`;
+                particle.style.top = `calc(50% + ${(Math.random() - 0.5) * 60}vh)`;
+                particle.style.width = `${Math.random() * 8 + 4}px`;
+                particle.style.height = particle.style.width;
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.animationDelay = `${Math.random() * 0.5}s`;
+                starBurstContainer.appendChild(particle);
+            }
+        }
+
+        // פונקציה לניקוי חלקיקי הכוכבים
+        function clearStarBurst() {
+            console.log("Clearing star burst effect.");
+            starBurstContainer.innerHTML = '';
+        }
+
+        // פונקציה להצגת הודעת תוצאה ויישום אפקטים
+        function showResult(message, isCorrect) {
+            console.log(`Showing result: "${message}", isCorrect: ${isCorrect}`);
+            resultMessage.textContent = message;
+            resultMessage.style.display = 'block';
+            resultMessage.classList.remove('error', 'success');
+
+            if (isCorrect) {
+                resultMessage.classList.add('success');
+                correctSound.play().catch(e => console.error("Error playing correct sound:", e));
+                createStarBurst();
+
+                // הסתרת אלמנטי הפאזל הקודמים ושכבת הרקע התחתונה
+                puzzleContainer.style.opacity = 0;
+                scatteredImagesContainer.style.opacity = 0;
+                puzzleContainer.style.pointerEvents = 'none'; // Make puzzle not clickable
+
+                setTimeout(() => {
+                    puzzleContainer.style.display = 'none'; // Fully hide
+                    scatteredImagesContainer.style.display = 'none'; // Fully hide
+
+                    // הצגת התוכן החדש
+                    successContent.style.display = 'flex'; // Show success content
+                    successContent.style.opacity = 1;
+                    console.log("Transitioned to success content.");
+                }, 500); // Wait for opacity transition
+
+            } else {
+                resultMessage.classList.add('error');
+                document.body.classList.add('shake'); // Add shake animation
+                wrongSound.play().catch(e => console.error("Error playing wrong sound:", e));
+                if (navigator.vibrate) { // Vibrate for haptic feedback on mobile
+                    navigator.vibrate(200);
+                }
+                setTimeout(() => {
+                    document.body.classList.remove('shake'); // Remove shake after animation
+                    console.log("Shake animation removed.");
+                }, 500);
+            }
+
+            // Hide the result message after a duration, but keep new content if correct
+            setTimeout(() => {
+                resultMessage.style.display = 'none';
+                if (isCorrect) {
+                    clearStarBurst(); // Clear stars after a while
+                }
+            }, isCorrect ? 6000 : 3000); // Longer display for success message
+        }
+
+        // טיפול בלחיצה על כפתור השליחה
+        submitButton.addEventListener('click', () => {
+            console.log("Submit button clicked.");
+            const userAnswer = answerInput.value.trim().toLowerCase();
+            const correctAnswers = ["לבן", "white"]; // Both Hebrew and English "white"
+
+            if (correctAnswers.includes(userAnswer)) {
+                showResult("תשובה נכונה! כל הכבוד", true);
+            } else {
+                showResult("תשובה שגויה!", false);
+            }
+        });
+
+        // מאפשר לחיצה על Enter לשליחת התשובה
+        answerInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                console.log("Enter key pressed.");
+                submitButton.click(); // Trigger button click on Enter
+            }
+        });
+    </script>
+</body>
+</html>
