@@ -24,7 +24,7 @@
             color: var(--text-color);
             overflow: hidden; /* Prevent scroll for animations */
             position: relative;
-            background-color: #000; /* צבע רקע שחור - כעת משאיר שחור */
+            background-color: #000; /* Default background */
             width: 100vw;
             height: 100vh;
         }
@@ -46,7 +46,7 @@
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            pointer-events: none;
+            pointer-events: none; /* Allows clicks to pass through to elements below */
             opacity: 0.8;
             filter: none;
             transition: opacity 0.5s ease-in-out;
@@ -68,7 +68,7 @@
             justify-content: center;
             width: 100%;
             transition: opacity 0.5s ease-in-out;
-            background-color: rgba(0, 0, 0, 0.4); /* רקע שקוף למקרה של בעיות טעינת תמונות */
+            background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background for content readability */
             border-radius: 10px;
         }
 
@@ -105,11 +105,11 @@
         }
 
         .puzzle-container input#answerInput:focus {
-            border-color: #6a0dad;
+            border-color: #6a0dad; /* Purple focus border */
         }
 
         .puzzle-container button#submitButton {
-            background-color: #6a0dad;
+            background-color: #6a0dad; /* Purple button */
             color: var(--text-color);
             padding: 15px 30px;
             font-size: 1.2em;
@@ -125,7 +125,7 @@
         }
 
         button#submitButton:hover {
-            background-color: #8c00b3;
+            background-color: #8c00b3; /* Darker purple on hover */
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(106, 13, 173, 0.6);
         }
@@ -140,16 +140,16 @@
             font-size: 1.8em;
             font-weight: 700;
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-            display: none;
+            display: none; /* Hidden by default */
             color: var(--text-color);
             z-index: 10;
         }
 
         .result-message.error {
-            color: var(--danger-color);
+            color: var(--danger-color); /* Red for error */
         }
         .result-message.success {
-            color: var(--primary-color);
+            color: var(--primary-color); /* White for success */
         }
 
         /* Animations */
@@ -164,7 +164,7 @@
 
         .shake {
             animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
-            transform: translate3d(0, 0, 0);
+            transform: translate3d(0, 0, 0); /* Ensures smooth animation */
             backface-visibility: hidden;
             perspective: 1000px;
         }
@@ -175,9 +175,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
+            pointer-events: none; /* Allows clicks to pass through */
             overflow: hidden;
-            z-index: 9999;
+            z-index: 9999; /* On top of everything */
         }
 
         .star-particle {
@@ -185,7 +185,7 @@
             background-color: #FFF;
             border-radius: 50%;
             opacity: 0;
-            animation: star-sparkle 1.5s forwards;
+            animation: star-sparkle 1.5s forwards; /* Animation for individual stars */
         }
 
         @keyframes star-sparkle {
@@ -205,7 +205,7 @@
 
         /* סגנונות לתוכן שיוצג לאחר תשובה נכונה */
         #successContent {
-            display: none;
+            display: none; /* Hidden by default */
             position: relative;
             z-index: 2;
             text-align: center;
@@ -218,139 +218,3 @@
             box-sizing: border-box;
             max-width: 800px;
             width: 100%;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            flex-grow: 1;
-            min-height: 100vh;
-            background-color: rgba(0, 0, 0, 0.4);
-            border-radius: 10px;
-        }
-
-        .color-info-row {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .color-info-row img {
-            width: 80px;
-            height: 80px;
-            object-fit: contain;
-            margin-inline-end: 15px;
-            vertical-align: middle;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-        }
-
-        .color-info-row .equal-sign {
-            font-size: 1.5em;
-            font-weight: 700;
-            margin-inline-end: 15px;
-            vertical-align: middle;
-        }
-
-        .color-info-row .numbers {
-            font-size: 1.2em;
-            font-weight: 400;
-            vertical-align: middle;
-            text-align: start;
-            direction: ltr;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px 10px;
-            justify-content: flex-start;
-        }
-
-        /* מדיה קווארי למסכים קטנים יותר */
-        @media (max-width: 768px) {
-            .puzzle-container h1, #successContent {
-                font-size: 1.5em;
-            }
-            .puzzle-container p {
-                font-size: 0.9em;
-            }
-            .puzzle-container input#answerInput, .puzzle-container button#submitButton {
-                font-size: 1em;
-            }
-            .color-info-row {
-                flex-direction: column;
-                align-items: center;
-            }
-            .color-info-row img {
-                margin-inline-end: 0;
-                margin-bottom: 10px;
-                width: 70px;
-                height: 70px;
-            }
-            .color-info-row .equal-sign {
-                margin-inline-end: 0;
-                margin-bottom: 5px;
-                font-size: 1.3em;
-            }
-            .color-info-row .numbers {
-                justify-content: center;
-                text-align: center;
-                font-size: 1.1em;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .puzzle-container h1, #successContent {
-                font-size: 1.2em;
-            }
-            .puzzle-container p {
-                font-size: 0.8em;
-            }
-            .puzzle-container input#answerInput, .puzzle-container button#submitButton {
-                padding: 10px;
-                font-size: 0.9em;
-            }
-            .result-message {
-                font-size: 1.2em;
-            }
-            .color-info-row img {
-                width: 50px;
-                height: 50px;
-            }
-            .color-info-row .equal-sign {
-                font-size: 1em;
-            }
-            .color-info-row .numbers {
-                font-size: 0.9em;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div id="scatteredImagesContainer"></div>
-
-    <div class="puzzle-container" id="puzzleContainer">
-        <h1>מה צבע החג שלא יחגוג?</h1>
-        <p>הקלד את תשובתך פה:</p>
-        <input type="text" id="answerInput" placeholder="הכנס תשובה">
-        <button id="submitButton">זאת התשובה, אני בטוח!</button>
-        <div id="resultMessage" class="result-message"></div>
-    </div>
-
-    <div id="successContent">
-        <div class="color-info-row">
-            <img src="images/black.jpg" alt="Black">
-            <span class="equal-sign">=</span>
-            <span class="numbers">193, 85, 166, 83</span>
-        </div>
-        <div class="color-info-row">
-            <img src="images/white.jpg" alt="White">
-            <span class="equal-sign">=</span>
-            <span class="numbers">470, 471, 472, 229, 256, 283, 310</span>
-        </div>
-        <div class="color-info-row">
-            <img src="images/red.jpg" alt="Red">
-            <span class="equal-sign">=</span>
-            <span class="numbers">447, 420, 393, 123, 150</span>
-        </div>
-        <div class="color-info-row">
-            <img src="images/blue.jpg" alt="Blue">
-            <span class="equal-sign">=</span>
